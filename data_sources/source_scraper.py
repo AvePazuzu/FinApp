@@ -20,32 +20,40 @@ Process:
 
 # Import libraries
 import pandas as pd
+import datetime as dt
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.request import Request
 
+
 # =============================================================================
-# 
+# finanznachrichten.de
 # =============================================================================
 
-tick = 'https://www.finanznachrichten.de/suche/uebersicht.htm?suche='
+# time of request
+now = dt.datetime.now()
+now_string = dt.strftime("%d.%m.%Y %H:%M:%S")
 
-tickers = ['wasserstoff', 'hydrogen']
 
-# Get Data
-finanzn_url = tick
+# define url
+url = 'https://www.finanznachrichten.de/suche/uebersicht.htm?suche='
+
+keywords = ['hydrogen']
+
+fin_url = url + keywords[0]
+
+# load csv
+
+
+
 
 news_tables = {}
 
-y_url = tick + tickers[1]
-req = Request(url=y_url,headers={'user-agent': 'my-app/0.0.1'}) 
+req = Request(url=fin_url,headers={'user-agent': 'FinApp/0.0.1'}) 
 resp = urlopen(req)    
 html = BeautifulSoup(resp, 'lxml')
 news_table = html.find('tbody', {'class': 'table-hoverable table-alternating-rows'})
-news_tables[tickers[0]] = news_table
-
-df = news_tables[tickers[0]]
-df_tr = df.findAll('a')
+# news_tables[keywords[0]] = news_table
 
 
 kk = news_table.findAll({'span', 'a'})
@@ -58,5 +66,12 @@ for v in kk3:
     if len(v) > 25:
         kk4.append(v)
 
-cols = ['Head']
+cols = ['Headline']
 df = pd.DataFrame(kk4, columns=cols)
+df['Datetime'] = now_string
+
+path = 'finanznachrichten/' + keywords[0]
+df.to_csv(path, sep = ';', index=False)
+
+
+
