@@ -1,0 +1,21 @@
+# Installed with anaconda distribution
+
+# Alpha Vantage reference: https://github.com/RomelTorres/alpha_vantage
+pip install alpha_vantage
+
+# Pandas
+conda install -c anaconda pandas
+
+# NLtk: Natural Language Toolkit
+conda install -c anaconda nltk
+
+# BeautifulSoup
+conda install -c anaconda beautifulsoup4
+
+'lxml'
+
+# matplotlib
+conda install -c conda-forge matplotlib
+
+# seaborn
+conda install seaborn
