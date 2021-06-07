@@ -14,6 +14,7 @@ Process:
     - find url with suitable strings
     - scrape the content via beautifullsoup
     - find and extract the required stings in the html document
+    - load todays news store file
     - compare if the strings are already in the database
     - write the new strings to database
 """
@@ -32,8 +33,8 @@ from urllib.request import Request
 
 # time of request
 now = dt.datetime.now()
-now_string = now.strftime("%d.%m.%Y %H:%M:%S")
-
+now_string1 = now.strftime("%d.%m.%Y %H:%M:%S")
+now_string2 = now.strftime("%Y%m%d")
 
 # kewords to itereate for search
 keywords = ['hydrogen', 'nel+asa']
@@ -44,13 +45,13 @@ for i in range(len(keywords)):
     fin_url = url + keywords[i]
     
     # load csv
-    path = 'finanznachrichten/' + keywords[i] + '.csv'
+    path = 'finanznachrichten/' + keywords[i] + "/" + keywords[i] + "_" + now_string2 + '.csv'
     
     try:
-        data = pd.read_csv(path, sep = ';')
+        data = pd.read_csv(path, sep = ';', ).drop(columns=["id"])
         
     except FileNotFoundError:
-        print('New keyword found. Adding new database...')
+        print('Creating new database file...')
         cols = ['Headline', 'Datetime']
         data = pd.DataFrame(columns=cols)
     
@@ -87,8 +88,8 @@ for i in range(len(keywords)):
     # combine and export data
     cols = ['Headline']
     df = pd.DataFrame(news, columns=['Headline'])
-    df['Datetime'] = now_string
+    df['Datetime'] = now_string1
             
-    data = pd.concat([df, data])
+    data = pd.concat([df, data]).reset_index().drop(columns=["index"]).reset_index().rename(columns={'index': "id"})
     
-    data.to_csv(path, sep = ';')
+    data.to_csv(path, sep = ';', index = False)
