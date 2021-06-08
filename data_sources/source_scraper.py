@@ -25,6 +25,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.request import Request
+import os
 
 
 # =============================================================================
@@ -39,21 +40,34 @@ now_string2 = now.strftime("%Y%m%d")
 # kewords to itereate for search
 keywords = ['hydrogen', 'nel+asa']
 
+
+def latest(path):
+    # get latest file in dir
+    files = os.listdir(path)
+    paths = [os.path.join(path, basename) for basename in files]
+    return max(paths, key=os.path.getctime)
+
+
 for i in range(len(keywords)):
     # define url
     url = 'https://www.finanznachrichten.de/suche/uebersicht.htm?suche='
     fin_url = url + keywords[i]
     
-    # load csv
-    path = 'finanznachrichten/' + keywords[i] + "/" + keywords[i] + "_" + now_string2 + '.csv'
-    
+    # load csv today's data
+    today = 'finanznachrichten/' + keywords[i] + "/" + keywords[i] + "_" + now_string2 + '.csv'
+    path = 'finanznachrichten/' + keywords[i]
     try:
-        data = pd.read_csv(path, sep = ';', ).drop(columns=["id"])
+        data = pd.read_csv(today, sep = ';', ).drop(columns=["id"])
+        # flag if new file is created
+        new_file = 0
         
     except FileNotFoundError:
+        # if there is no file with a date of today, latest file is loaded for comparisonof of double entries
         print('Creating new database file...')
         cols = ['Headline', 'Datetime']
         data = pd.DataFrame(columns=cols)
+        data0 = pd.read_csv(latest(path), sep = ';').drop(columns=["id"])
+        new_file = 1
     
     # request url and recieve the respond   
     req = Request(url=fin_url,headers={'user-agent': 'FinApp/0.0.1'}) 
@@ -81,8 +95,12 @@ for i in range(len(keywords)):
     dt = data['Headline'].tolist()
     news = []
     for i in news_all:
-        if i not in data['Headline'].tolist():
-            news.append(i)
+        if new_file == 0:
+            if i not in data['Headline'].tolist():
+                news.append(i)
+        else:
+            if i not in data0['Headline'].tolist():
+                news.append(i)
     
     
     # combine and export data
@@ -92,4 +110,4 @@ for i in range(len(keywords)):
             
     data = pd.concat([df, data]).reset_index().drop(columns=["index"]).reset_index().rename(columns={'index': "id"})
     
-    data.to_csv(path, sep = ';', index = False)
+    data.to_csv(today, sep = ';', index = False)
