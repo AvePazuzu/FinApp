@@ -1,3 +1,4 @@
 # ignore all test files
 *test*
 /data_sources/*
+*config*
