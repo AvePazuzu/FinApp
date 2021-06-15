@@ -19,3 +19,6 @@ conda install -c conda-forge matplotlib
 
 # seaborn
 conda install seaborn
+
+# bobo3
+conda install -c anaconda boto3

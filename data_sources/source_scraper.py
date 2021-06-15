@@ -41,8 +41,13 @@ now_string2 = now.strftime("%Y%m%d")
 keywords = ['hydrogen', 'nel+asa']
 
 
+# =============================================================================
+# insert here heuristics for latest data file in S3
+# =============================================================================
+
 def latest(path):
     # get latest file in dir
+        
     files = os.listdir(path)
     paths = [os.path.join(path, basename) for basename in files]
     return max(paths, key=os.path.getctime)
@@ -90,7 +95,7 @@ for i in range(len(keywords)):
         if len(v) > 25:
             news_all.append(v)
     
-    
+        
     # check for double entries and append only new head lines
     dt = data['Headline'].tolist()
     news = []
