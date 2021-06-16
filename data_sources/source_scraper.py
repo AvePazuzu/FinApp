@@ -20,6 +20,7 @@ Process:
 """
 
 # Import libraries
+import yaml
 import pandas as pd
 import datetime as dt
 from bs4 import BeautifulSoup
@@ -30,6 +31,12 @@ from urllib.request import Request
 # =============================================================================
 # finanznachrichten.de
 # =============================================================================
+
+with open("config.yaml", "r") as ymlfile:
+    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+    
+AWSAccessKeyId = cfg['AWS']["AWSAccessKeyId"]    
+AWSSecretKey = cfg['AWS']["AWSSecretKey" ] 
 
 # time of request
 now = dt.datetime.now()
@@ -45,6 +52,8 @@ keywords = ['hydrogen', 'nel+asa']
 # =============================================================================
 # insert here interaction with s3
 # =============================================================================
+
+
 
 def get_last(int_now, path):
     # get last year file 
