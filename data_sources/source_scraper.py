@@ -26,7 +26,8 @@ import datetime as dt
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.request import Request
-
+import boto3
+from botocore.exceptions import NoCredentialsError
 
 # =============================================================================
 # finanznachrichten.de
@@ -54,6 +55,23 @@ keywords = ['hydrogen', 'nel+asa']
 # =============================================================================
 
 
+bucket_name = "financialnewsstore"
+
+def upload_to_aws(local_file, bucket, s3_file):
+    s3 = boto3.client('s3', aws_access_key_id=AWSAccessKeyId,
+                      aws_secret_access_key=AWSSecretKey)
+
+    try:
+        s3.upload_file(local_file, bucket, s3_file)
+        print("Upload Successful")
+        return True
+    except FileNotFoundError:
+        print("The file was not found")
+        return False
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
+
 
 def get_last(int_now, path):
     # get last year file 
@@ -69,7 +87,7 @@ def main():
         
         # load csv of ongoing year
         current = 'finanznachrichten/' + keywords[i] + "/" + keywords[i] + "_" + now_string2 + '.csv'
-        path = 'finanznachrichten/' + keywords[i] + "/" + keywords[i] + "_"
+        path =    'finanznachrichten/' + keywords[i] + "/" + keywords[i] + "_"
         try:
             data = pd.read_csv(current, sep = ';', ).drop(columns=["id"])
             # flag if new file is created
@@ -130,7 +148,13 @@ def main():
                 
         data = pd.concat([df, data]).reset_index().drop(columns=["index"]).reset_index().rename(columns={'index': "id"})
         
+        # save local copy
         data.to_csv(current, sep = ';', index = False)
+        
+        # upload to s3
+        local_file = current
+        s3_file_name = current
+        upload_to_aws(local_file, bucket_name, s3_file_name)
 
 if __name__ == '__main__':
     main()
