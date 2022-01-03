@@ -1,0 +1,55 @@
+{
+    "Symbols": [
+        "TL0.FRK",
+        "PO0.FRK",
+        "D7G.FRK"
+    ],
+    "test12666": {
+        "Ledger": {
+            "0": {
+                "transaction": "buy",
+                "Symbol": "TL0.FRK",
+                "date": "2020-01-02 14:32",
+                "vol": 6,
+                "price": 12.12,
+                "fees": 10.99
+            },
+            "1": {
+                "transaction": "buy",
+                "Symbol": "PO0.FRK",
+                "date": "2020-01-02",
+                "vol": 4,
+                "price": 12.12,
+                "fees": 10.99
+            },
+            "2": {
+                "transaction": "buy",
+                "Symbol": "D7G.FRK",
+                "date": "2020-01-02",
+                "vol": 4,
+                "price": 12.12,
+                "fees": 10.99
+            }
+        },
+        "Values": {
+            "TL0.FRK": {
+                "Invest": 83.71,
+                "Vol": 6,
+                "Val": 2888.4,
+                "Profit": 0
+            },
+            "PO0.FRK": {
+                "Invest": 59.47,
+                "Vol": 4,
+                "Val": 55.1,
+                "Profit": 0
+            },
+            "D7G.FRK": {
+                "Invest": 59.47,
+                "Vol": 4,
+                "Val": 6.68,
+                "Profit": 0
+            }
+        }
+    }
+}
